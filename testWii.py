@@ -71,7 +71,7 @@ def handle_callback(msg_list, time):
 				LED_ITER += 1
 			elif (msg[1] & cwiid.BTN_DOWN):
 				LED_ITER -= 1
-			wm.led = LED_ITER
+			WM.led = LED_ITER
 
 if __name__ == '__main__': main()
 if WM:
