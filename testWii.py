@@ -25,6 +25,7 @@ def main():
 	raw_input('Press Enter to begin...')
 	print('Press 1 and 2 on your Wiimote now.')
 	attempt = 0
+	global wm
 	while not wm:
 		try:
 			print('Attempt ', attempt + 1, ' of ', NUM_CONNECTION_TRIES)
