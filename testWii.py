@@ -27,8 +27,6 @@ while not wm:
 		print('Attempt ', attempt + 1, ' of ', NUM_CONNECTION_TRIES)
 		wm = cwiid.Wiimote()
 	except RuntimeError:
-		print('Could not connect to Wiimote.')
-
 		if (attempt < NUM_CONNECTION_TRIES):
 			attempt += 1
 		else:
