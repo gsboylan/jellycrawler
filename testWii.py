@@ -63,7 +63,7 @@ def main():
 def handle_callback(msg_list, time):
 	for msg in msg_list:
 		if msg[0] == cwiid.MESG_BTN:
-			wm.rumble = (msg(1) & cwiid.BTN_B)
+			wm.rumble = (msg[1] & cwiid.BTN_B)
 
 			if (msg[1] & cwiid.BTN_UP):
 				wm.led += 1
