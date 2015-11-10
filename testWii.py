@@ -14,21 +14,30 @@ Unfortunately, the cwiid library is only compatible with Python 2, and will not 
 from __future__ import print_function
 import cwiid
 import RPi.GPIO as GPIO
+import time
 
 NUM_CONNECTION_TRIES = 5
 
+raw_input('Press Enter to begin...')
 print('Press 1 and 2 on your Wiimote now.')
 wm = None
 attempt = 0
 while not wm:
 	try:
+		print('Attempt ', attempt + 1, ' of ', NUM_CONNECTION_TRIES)
 		wm = cwiid.Wiimote()
 	except RuntimeError:
+		print('Could not connect to Wiimote.')
+
 		if (attempt < NUM_CONNECTION_TRIES):
-			print('Attempt ', attempt, ' of ', NUM_CONNECTION_TRIES,
-				', could not connect to Wiimote.')
 			attempt += 1
 		else:
-			print('Could not connect to Wiimote. Exiting.')
+			print('Maximum number of attempts reached. Exiting.')
 			quit()
 print('Connected to wiimote.')
+
+wm.led = 15
+wm.rumble = True
+time.sleep(1)
+
+wm.close()
