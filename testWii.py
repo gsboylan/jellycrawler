@@ -19,17 +19,18 @@ import sys
 import pprint
 
 NUM_CONNECTION_TRIES = 5
-wm = None
+WM = None
+LED_ITER = 0
 
 def main():
 	raw_input('Press Enter to begin...')
 	print('Press 1 and 2 on your Wiimote now.')
 	attempt = 0
-	global wm
-	while not wm:
+	global WM
+	while not WM:
 		try:
 			print('Attempt ', attempt + 1, ' of ', NUM_CONNECTION_TRIES)
-			wm = cwiid.Wiimote()
+			WM = cwiid.Wiimote()
 		except RuntimeError:
 			if (attempt < NUM_CONNECTION_TRIES):
 				attempt += 1
@@ -39,22 +40,22 @@ def main():
 	print('Connected to wiimote.')
 
 	time.sleep(1)
-	wm.rumble = True
-	wm.led = cwiid.LED1_ON
+	WM.rumble = True
+	WM.led = cwiid.LED1_ON
 	time.sleep(0.5)
-	wm.led = cwiid.LED2_ON
+	WM.led = cwiid.LED2_ON
 	time.sleep(0.5)
-	wm.led = cwiid.LED3_ON
+	WM.led = cwiid.LED3_ON
 	time.sleep(0.5)
-	wm.led = cwiid.LED4_ON
+	WM.led = cwiid.LED4_ON
 	time.sleep(0.5)
-	wm.led = 0
-	wm.rumble = False
+	WM.led = 0
+	WM.rumble = False
 
-	wm.rpt_mode = cwiid.RPT_BTN
+	WM.rpt_mode = cwiid.RPT_BTN
 
-	wm.mesg_callback = handle_callback
-	wm.enable(cwiid.FLAG_MESG_IFC)
+	WM.mesg_callback = handle_callback
+	WM.enable(cwiid.FLAG_MESG_IFC)
 
 	print('Press ctrl+c to disconnect and exit.')
 	while True:
@@ -63,14 +64,16 @@ def main():
 def handle_callback(msg_list, time):
 	for msg in msg_list:
 		if msg[0] == cwiid.MESG_BTN:
-			wm.rumble = (msg[1] & cwiid.BTN_B)
+			WM.rumble = (msg[1] & cwiid.BTN_B)
 
+			global LED_ITER
 			if (msg[1] & cwiid.BTN_UP):
-				wm.led += 1
+				LED_ITER += 1
 			elif (msg[1] & cwiid.BTN_DOWN):
-				wm.led -= 1
+				LED_ITER -= 1
+			wm.led = LED_ITER
 
 if __name__ == '__main__': main()
-if wm:
-	wm.close()
+if WM:
+	WM.close()
 
