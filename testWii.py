@@ -15,6 +15,8 @@ from __future__ import print_function
 import cwiid
 import RPi.GPIO as GPIO
 import time
+import sys
+import pprint
 
 NUM_CONNECTION_TRIES = 5
 
@@ -34,8 +36,29 @@ while not wm:
 			quit()
 print('Connected to wiimote.')
 
-wm.led = 15
 wm.rumble = True
-time.sleep(1)
+wm.led = cwiid.LED1_ON
+time.sleep(0.1)
+wm.led = cwiid.LED2_ON
+time.sleep(0.1)
+wm.led = cwiid.LED3_ON
+time.sleep(0.1)
+wm.led = cwiid.LED4_ON
+time.sleep(0.1)
+wm.led = 0
+wm.rumble = False
+
+wm.rpt_mode = cwiid.RPT_BTN
+
+wm.mesg_callback = handle_callback
+wm.enable(cwiid.FLAG_MESG_IFC)
+
+print('Press ctrl+c to disconnect and exit.')
+while True:
+	pass
 
 wm.close()
+
+def handle_callback(msg_list, time):
+	for msg in msg_list:
+		pprint.pprint(msg)
