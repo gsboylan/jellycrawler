@@ -20,6 +20,10 @@ import pprint
 
 NUM_CONNECTION_TRIES = 5
 
+def handle_callback(msg_list, time):
+	for msg in msg_list:
+		pprint.pprint(msg)
+
 raw_input('Press Enter to begin...')
 print('Press 1 and 2 on your Wiimote now.')
 wm = None
@@ -59,6 +63,3 @@ while True:
 
 wm.close()
 
-def handle_callback(msg_list, time):
-	for msg in msg_list:
-		pprint.pprint(msg)
