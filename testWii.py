@@ -15,12 +15,13 @@ from __future__ import print_function
 import cwiid
 import RPi.GPIO as GPIO
 import time
-import sys
-import pprint
 
 NUM_CONNECTION_TRIES = 5
 WM = None
 LED_ITER = 0
+IS_SUPER = True
+PWM_DUTY = 0
+PWM = None
 
 def main():
 	raw_input('Press Enter to begin...')
@@ -57,6 +58,17 @@ def main():
 	WM.mesg_callback = handle_callback
 	WM.enable(cwiid.FLAG_MESG_IFC)
 
+	GPIO.setmode(GPIO.BOARD)
+	try:
+		GPIO.setup(3, GPIO.OUT)
+		global PWM
+		PWM = GPIO.PWM(3, 100)
+		print('Superuser detected, GPIO control enabled. Pin 3 is active high.')
+	except RuntimeError:
+		print('Not running as superuser, GPIO control is disabled.')
+		global IS_SUPER
+		IS_SUPER = False
+
 	print('Press ctrl+c to disconnect and exit.')
 	while True:
 		pass
@@ -73,7 +85,29 @@ def handle_callback(msg_list, time):
 				LED_ITER -= 1
 			WM.led = LED_ITER
 
-if __name__ == '__main__': main()
+			if IS_SUPER:
+				global PWM_DUTY
+				if (msg[1] & cwiid.BTN_RIGHT):
+					if PWM_DUTY < 100:
+						PWM_DUTY += 5
+				elif (msg[1] & cwiid.BTN_LEFT):
+					if PWM_DUTY > 0:
+						PWM_DUTY -= 5
+
+				# Toggle overrides PWM when active
+				if (msg[1] & cwiid.BTN_A):
+					GPIO.output(3, GPIO.HIGH)
+				else:
+					PWM.start(PWM_DUTY)
+
+if __name__ == '__main__':
+	try:
+		main()
+	except KeyboardInterrupt:
+		pass
 if WM:
 	WM.close()
-
+	try:
+		GPIO.cleanup()
+	except:
+		pass
