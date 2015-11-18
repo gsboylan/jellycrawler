@@ -63,7 +63,8 @@ def main():
 		GPIO.setup(3, GPIO.OUT)
 		global PWM
 		PWM = GPIO.PWM(3, 100)
-		print('Superuser detected, GPIO control enabled. Pin 3 is active high.')
+		PWM.start(60)
+		print('Superuser detected, GPIO control enabled. Pin 3 is active PWM.')
 	except RuntimeError:
 		print('Not running as superuser, GPIO control is disabled.')
 		global IS_SUPER
@@ -96,9 +97,9 @@ def handle_callback(msg_list, time):
 
 				# Toggle overrides PWM when active
 				if (msg[1] & cwiid.BTN_A):
-					GPIO.output(3, GPIO.HIGH)
+					PWM.ChangeDutyCycle(100)
 				else:
-					PWM.start(PWM_DUTY)
+					PWM.ChangeDutyCycle(PWM_DUTY)
 
 if __name__ == '__main__':
 	try:
