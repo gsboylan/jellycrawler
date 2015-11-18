@@ -108,7 +108,8 @@ if __name__ == '__main__':
 		pass
 if WM:
 	WM.close()
-	try:
-		GPIO.cleanup()
-	except:
-		pass
+	if IS_SUPER:
+		try:
+			GPIO.cleanup()
+		except:
+			pass
