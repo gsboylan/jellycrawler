@@ -8,9 +8,9 @@ import atexit
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
 # Pre-translation car values. The motor and servo functions convert these into control signals.
-_BACKWARD = 0
+_BACKWARD = 2
 _FORWARD = 1
-_RELEASE = -1
+_RELEASE = 4
 CURRENT_DIRECTION = _RELEASE
 
 # Range 0-100
@@ -69,9 +69,15 @@ def turnOffMotors():
 
 	DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
 	DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
-	DRIVE_MOTOR1.run(Adafruit_MotorHAT.RELEASE)
-	DRIVE_MOTOR2.run(Adafruit_MotorHAT.RELEASE)
+	DRIVE_MOTOR1.run(CURRENT_DIRECTION)
+	DRIVE_MOTOR2.run(CURRENT_DIRECTION)
 	pass
+
+def setDirection(direction):
+	global CURRENT_DIRECTION
+	CURRENT_DIRECTION = direction
+	DRIVE_MOTOR1.run(CURRENT_DIRECTION)
+	DRIVE_MOTOR2.run(CURRENT_DIRECTION)
 
 def increase_speed():
 	"""Increase the speed by one percent and apply it to the motors.
