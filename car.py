@@ -4,6 +4,8 @@ cleanliness's sake, and to allow the main file to function regardless of the lev
 achieved in the code here."""
 
 from __future__ import print_function
+import atexit
+from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
 # Pre-translation car values. The motor and servo functions convert these into control signals.
 _BACKWARD = 0
@@ -40,11 +42,11 @@ pwm = None
 def motor_setup():
 	print('Setting up motors')
 
-	# motorhat = Adafruit_MotorHAT(addr=0x61)
+	motorhat = Adafruit_MotorHAT(addr=0x60)
 	global DRIVE_MOTOR1
 	global DRIVE_MOTOR2
-	# DRIVE_MOTOR1 = motorhat.getMotor(1)
-	# DRIVE_MOTOR2 = motorhat.getMotor(2)
+	DRIVE_MOTOR1 = motorhat.getMotor(1)
+	DRIVE_MOTOR2 = motorhat.getMotor(2)
 	pass
 
 def servo_setup():
@@ -65,10 +67,10 @@ def turnOffMotors():
 	CURRENT_DIRECTION = _RELEASE
 	CURRENT_SPEED = 0
 
-	# DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-	# DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
-	# DRIVE_MOTOR1.run(Adafruit_MotorHAT.RELEASE)
-	# DRIVE_MOTOR2.run(Adafruit_MotorHAT.RELEASE)
+	DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
+	DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
+	DRIVE_MOTOR1.run(Adafruit_MotorHAT.RELEASE)
+	DRIVE_MOTOR2.run(Adafruit_MotorHAT.RELEASE)
 	pass
 
 def increase_speed():
@@ -78,12 +80,12 @@ def increase_speed():
 	# Only do this if the motor is able to turn (direction agnostic)
 	if CURRENT_DIRECTION:
 		# First iterate the speed value
+		global CURRENT_SPEED
 		if (CURRENT_SPEED < _MAX_SPEED):
-			global CURRENT_SPEED
 			CURRENT_SPEED += 1
 
-			# DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-			# DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
+			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
+			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
 
 def decrease_speed():
 	"""Decrease the speed by one percent and apply it to the motors.
@@ -92,12 +94,12 @@ def decrease_speed():
 	# Only do this if the motor is able to turn (direction agnostic)
 	if CURRENT_DIRECTION:
 		# First iterate the speed value
+		global CURRENT_SPEED
 		if (CURRENT_SPEED < _MAX_SPEED):
-			global CURRENT_SPEED
 			CURRENT_SPEED -= 1
 
-			# DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-			# DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
+			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
+			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
 
 def snap_speed(percent):
 	# Only do this if the motor is able to turn (direction agnostic)
