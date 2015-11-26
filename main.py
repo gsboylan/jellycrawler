@@ -46,7 +46,7 @@ def wm_setup():
 	WM.rumble = False
 
 def mainloop_buttonMode():
-	buttons = wm.state['buttons']
+	buttons = WM.state['buttons']
 	# Buttons control movement and turning
 
 	if (car._CURRENT_DIRECTION == car.FORWARD):
