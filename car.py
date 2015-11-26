@@ -65,7 +65,7 @@ def turnOffMotors():
 		global _CURRENT_DIRECTION
 		global _CURRENT_SPEED
 		_CURRENT_DIRECTION = RELEASE
-		_CURRENT_SPEED = 0
+		_CURRENT_SPEED = 0.0
 
 		motorhat.getMotor(1).setSpeed(MOTOR_SPEED())
 		motorhat.getMotor(2).setSpeed(MOTOR_SPEED())
@@ -96,8 +96,8 @@ def increase_speed():
 	if _CURRENT_DIRECTION:
 		# First iterate the speed value
 		global _CURRENT_SPEED
-		if (_CURRENT_SPEED < 100):
-			_CURRENT_SPEED += 5
+		if (_CURRENT_SPEED <= 95):
+			_CURRENT_SPEED += 5.0
 
 			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
 			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
@@ -110,8 +110,8 @@ def decrease_speed():
 	if _CURRENT_DIRECTION:
 		# First iterate the speed value
 		global _CURRENT_SPEED
-		if (_CURRENT_SPEED < 100):
-			_CURRENT_SPEED -= 5
+		if (_CURRENT_SPEED >= 5):
+			_CURRENT_SPEED -= 5.0
 
 			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
 			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
