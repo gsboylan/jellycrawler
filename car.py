@@ -29,12 +29,12 @@ _CURRENT_ROTATION = 50.0
 _MAX_PWM_TICK = 4096
 # Convert rotation into int tuple ranging from 0..4096 defining when to toggle pwm signal
 # Calibrated: 0.6 is far right, 0, is far left, 0.3 is centered
-SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100)* 0.6 *4096)
+SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100) * 0.6 *  4095)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
 PWM_FREQ = 500
-PWM_CHANNEL = 1
+PWM_CHANNEL = 15
 
 # Pointers to the DC Motor objects
 DRIVE_MOTOR1 = None
@@ -72,6 +72,12 @@ def turnOffMotors():
 		motorhat.getMotor(2).setSpeed(MOTOR_SPEED())
 		motorhat.getMotor(1).run(_CURRENT_DIRECTION)
 		motorhat.getMotor(2).run(_CURRENT_DIRECTION)
+
+def turnOffPWM():
+	"""set all PWM duty cycles to 0"""
+	if pwm:
+		for channel in range (16):
+			pwm.setPWM(channel, 0, 0)
 
 def set_direction(direction):
 	"""Set the current direction of motor rotation.
@@ -152,3 +158,4 @@ def rotate_left(percent):
 	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
 
 atexit.register(turnOffMotors)
+atexit.register(turnOffPWM)
