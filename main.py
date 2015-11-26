@@ -103,30 +103,31 @@ def update_leds():
 		234: 50-75%
 		1234: 75-100%"""
 
+	global WM
 	if (car._CURRENT_DIRECTION == car.FORWARD):
 		if (car._CURRENT_SPEED == 0):
-			wm.led = 0
+			WM.led = 0
 		elif (car._CURRENT_SPEED <= 25):
-			wm.led = cwiid.LED1_ON
+			WM.led = cwiid.LED1_ON
 		elif (car._CURRENT_SPEED <= 50):
-			wm.led = cwiid.LED1_ON | cwiid.LED2_ON
+			WM.led = cwiid.LED1_ON | cwiid.LED2_ON
 		elif (car._CURRENT_SPEED <= 75):
-			wm.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON
+			WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON
 		else:
-			wm.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON | cwiid.LED4_ON
+			WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON | cwiid.LED4_ON
 	elif (car._CURRENT_DIRECTION == car.BACKWARD):
 		if (car._CURRENT_SPEED == 0):
-			wm.led = 0
+			WM.led = 0
 		elif (car._CURRENT_SPEED <= 25):
-			wm.led = cwiid.LED4_ON
+			WM.led = cwiid.LED4_ON
 		elif (car._CURRENT_SPEED <= 50):
-			wm.led = cwiid.LED4_ON | cwiid.LED3_ON
+			WM.led = cwiid.LED4_ON | cwiid.LED3_ON
 		elif (car._CURRENT_SPEED <= 75):
-			wm.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON
+			WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON
 		else:
-			wm.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON | cwiid.LED1_ON
+			WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON | cwiid.LED1_ON
 	else:
-		wm.led = 0
+		WM.led = 0
 
 if __name__ == "__main__":
 	wm_setup()
