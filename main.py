@@ -139,6 +139,7 @@ def update_leds():
 def main():
 	wm_setup()
 	car.motor_setup()
+	car.servo_setup()
 
 	WM.rpt_mode = cwiid.RPT_BTN
 
