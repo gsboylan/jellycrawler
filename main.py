@@ -95,3 +95,6 @@ if __name__ == "__main__":
 	WM.rpt_mode = cwiid.RPT_BTN
 	WM.mesg_callback = callback_buttonMode
 	WM.enable(cwiid.FLAG_MESG_IFC)
+
+	while True:
+		pass
