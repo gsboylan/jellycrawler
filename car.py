@@ -96,7 +96,7 @@ def increase_speed():
 	if _CURRENT_DIRECTION:
 		# First iterate the speed value
 		global _CURRENT_SPEED
-		if (_CURRENT_SPEED < _MAX_SPEED):
+		if (_CURRENT_SPEED < 100):
 			_CURRENT_SPEED += 5
 
 			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
@@ -110,7 +110,7 @@ def decrease_speed():
 	if _CURRENT_DIRECTION:
 		# First iterate the speed value
 		global _CURRENT_SPEED
-		if (_CURRENT_SPEED < _MAX_SPEED):
+		if (_CURRENT_SPEED < 100):
 			_CURRENT_SPEED -= 5
 
 			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
