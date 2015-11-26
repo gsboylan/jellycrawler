@@ -43,7 +43,7 @@ DRIVE_MOTOR2 = None
 pwm = None
 
 def motor_setup():
-	print('Setting up motors')
+	"""Get pointers to both of the motors and to the hat"""
 
 	global motorhat
 	motorhat = Adafruit_MotorHAT(addr=0x60)
@@ -53,8 +53,6 @@ def motor_setup():
 	DRIVE_MOTOR2 = motorhat.getMotor(2)
 
 def servo_setup():
-	print('Setting up servos')
-	
 	global pwm
 	# pwm = PWM(0x40)
 	# pwm.setPWMFreq(PWM_FREQ)
@@ -99,7 +97,7 @@ def increase_speed():
 		# First iterate the speed value
 		global _CURRENT_SPEED
 		if (_CURRENT_SPEED < _MAX_SPEED):
-			_CURRENT_SPEED += 1
+			_CURRENT_SPEED += 5
 
 			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
 			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
@@ -113,7 +111,7 @@ def decrease_speed():
 		# First iterate the speed value
 		global _CURRENT_SPEED
 		if (_CURRENT_SPEED < _MAX_SPEED):
-			_CURRENT_SPEED -= 1
+			_CURRENT_SPEED -= 5
 
 			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
 			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())

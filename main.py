@@ -71,16 +71,14 @@ def callback_buttonMode(mesg_list, time):
 				elif (mesg[1] & cwiid.BTN_DOWN):
 					car.increase_speed()
 			else:
-				# Set direction based on the button pressed, and start moving at the slowest speed
+				# Set direction based on the button pressed,
 				# This will only happen on startup or after turning off the motors, so
 				# the speed will start off as 0
 
 				if (mesg[1] & cwiid.BTN_UP):
-					car._CURRENT_DIRECTION = car.FORWARD
-					car.increase_speed()
+					car.set_direction(car.FORWARD)
 				elif (mesg[1] & cwiid.BTN_DOWN):
-					car._CURRENT_DIRECTION = car.BACKWARD
-					car.increase_speed()
+					car.set_direction(car.BACKWARD)
 
 			# Only go if the button is being held
 			if (mesg[1] & cwiid.BTN_B):
@@ -88,13 +86,55 @@ def callback_buttonMode(mesg_list, time):
 			else:
 				car.disable_motors()
 
+			update_leds()
+
+def update_leds():
+	"""Use the wiimote's LEDs as a speed indicator.
+	Forward:
+		0: 0%
+		1: <25%
+		12: 25-50%
+		123: 50-75%
+		1234: 75-100%
+	Reverse:
+		0: 0%
+		4: <25%
+		34: 25-50%
+		234: 50-75%
+		1234: 75-100%"""
+
+	if (car._CURRENT_DIRECTION == car.FORWARD):
+		if (car._CURRENT_SPEED == 0):
+			wm.led = 0
+		elif (car._CURRENT_SPEED <= 25):
+			wm.led = cwiid.LED1_ON
+		elif (car._CURRENT_SPEED <= 50):
+			wm.led = cwiid.LED1_ON | cwiid.LED2_ON
+		elif (car._CURRENT_SPEED <= 75):
+			wm.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON
+		else:
+			wm.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON | cwiid.LED4_ON
+	elif (car._CURRENT_DIRECTION == car.BACKWARD):
+		if (car._CURRENT_SPEED == 0):
+			wm.led = 0
+		elif (car._CURRENT_SPEED <= 25):
+			wm.led = cwiid.LED4_ON
+		elif (car._CURRENT_SPEED <= 50):
+			wm.led = cwiid.LED4_ON | cwiid.LED3_ON
+		elif (car._CURRENT_SPEED <= 75):
+			wm.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON
+		else:
+			wm.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON | cwiid.LED1_ON
+	else:
+		wm.led = 0
+
 if __name__ == "__main__":
 	wm_setup()
 	car.motor_setup()
 
 	WM.rpt_mode = cwiid.RPT_BTN
 	WM.mesg_callback = callback_buttonMode
-	WM.enable(cwiid.FLAG_MESG_IFC)
+	WM.enable(cwiid.FLAG_MESG_IFC | cwiid.FLAG_CONTINUOUS)
 
 	while True:
 		pass
