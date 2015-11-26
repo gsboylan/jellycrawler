@@ -80,9 +80,9 @@ def mainloop_buttonMode():
 			car.set_direction(car.BACKWARD)
 
 	if (buttons & cwiid.BTN_LEFT):
-		car.rotate_right()
+		car.rotate_right(None)
 	elif (buttons & cwiid.BTN_RIGHT):
-		car.rotate_left()
+		car.rotate_left(None)
 
 	# Only go if the button is being held
 	if (buttons & cwiid.BTN_B):
