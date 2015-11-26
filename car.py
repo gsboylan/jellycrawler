@@ -8,10 +8,10 @@ import atexit
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
 # Pre-translation car values. The motor and servo functions convert these into control signals.
-BACKWARD = Adafruit_MotorHAT._BACKWARD
+BACKWARD = Adafruit_MotorHAT.BACKWARD
 FORWARD = Adafruit_MotorHAT.FORWARD
 RELEASE = Adafruit_MotorHAT.RELEASE
-_CURRENT_DIRECTION = _RELEASE
+_CURRENT_DIRECTION = RELEASE
 
 # Range 0-100
 _CURRENT_SPEED = 0.0
@@ -73,13 +73,21 @@ def turnOffMotors():
 	DRIVE_MOTOR2.run(_CURRENT_DIRECTION)
 	pass
 
-def setDirection(direction):
+def set_direction(direction):
 	"""Set the current direction of motor rotation.
 	Direction should be FORWARD, BACKWARD, or RELEASE."""
 	global _CURRENT_DIRECTION
 	_CURRENT_DIRECTION = direction
+
+def enable_motors():
+	"""Applies whatever the current direction is to the motors to enable movement."""
 	DRIVE_MOTOR1.run(_CURRENT_DIRECTION)
 	DRIVE_MOTOR2.run(_CURRENT_DIRECTION)
+
+def disable_motors():
+	"""Releases the motors without changing the state variables."""
+	DRIVE_MOTOR1.run(RELEASE)
+	DRIVE_MOTOR1.run(RELEASE)
 
 def increase_speed():
 	"""Increase the speed by one percent and apply it to the motors.
@@ -130,3 +138,4 @@ def rotate_right(percent):
 
 	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
 
+atexit.register(turnOffMotors)
