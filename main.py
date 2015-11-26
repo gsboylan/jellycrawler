@@ -45,48 +45,47 @@ def wm_setup():
 	WM.led = 0
 	WM.rumble = False
 
-def callback_buttonMode(mesg_list, time):
-	for mesg in mesg_list:
-		if (mesg[0] == cwiid.MESG_BTN):
-			# Buttons control movement and turning
+def mainloop_buttonMode():
+	buttons = wm.state['buttons']
+	# Buttons control movement and turning
 
-			if (car._CURRENT_DIRECTION == car.FORWARD):
-				# Up button increases speed, down button decreases speed.
-				# Down (past 0) sets to backward.
+	if (car._CURRENT_DIRECTION == car.FORWARD):
+		# Up button increases speed, down button decreases speed.
+		# Down (past 0) sets to backward.
 
-				if (mesg[1] & cwiid.BTN_UP):
-					car.increase_speed()
-				elif (mesg[1] & cwiid.BTN_DOWN):
-					car.decrease_speed()
-					if (car._CURRENT_SPEED == 0):
-						car.set_direction(car.BACKWARD)
-			elif (car._CURRENT_DIRECTION == car.BACKWARD):
-				# Up button decreases speed, down button increases speed.
-				# Up (past 0) sets to foward.
+		if (buttons & cwiid.BTN_UP):
+			car.increase_speed()
+		elif (buttons & cwiid.BTN_DOWN):
+			car.decrease_speed()
+			if (car._CURRENT_SPEED == 0):
+				car.set_direction(car.BACKWARD)
+	elif (car._CURRENT_DIRECTION == car.BACKWARD):
+		# Up button decreases speed, down button increases speed.
+		# Up (past 0) sets to foward.
 
-				if (mesg[1] & cwiid.BTN_UP):
-					car.decrease_speed()
-					if (car._CURRENT_SPEED == 0):
-						car.set_direction(car.FORWARD)
-				elif (mesg[1] & cwiid.BTN_DOWN):
-					car.increase_speed()
-			else:
-				# Set direction based on the button pressed,
-				# This will only happen on startup or after turning off the motors, so
-				# the speed will start off as 0
+		if (buttons & cwiid.BTN_UP):
+			car.decrease_speed()
+			if (car._CURRENT_SPEED == 0):
+				car.set_direction(car.FORWARD)
+		elif (buttons & cwiid.BTN_DOWN):
+			car.increase_speed()
+	else:
+		# Set direction based on the button pressed,
+		# This will only happen on startup or after turning off the motors, so
+		# the speed will start off as 0
 
-				if (mesg[1] & cwiid.BTN_UP):
-					car.set_direction(car.FORWARD)
-				elif (mesg[1] & cwiid.BTN_DOWN):
-					car.set_direction(car.BACKWARD)
+		if (buttons & cwiid.BTN_UP):
+			car.set_direction(car.FORWARD)
+		elif (buttons & cwiid.BTN_DOWN):
+			car.set_direction(car.BACKWARD)
 
-			# Only go if the button is being held
-			if (mesg[1] & cwiid.BTN_B):
-				car.enable_motors()
-			else:
-				car.disable_motors()
+	# Only go if the button is being held
+	if (buttons & cwiid.BTN_B):
+		car.enable_motors()
+	else:
+		car.disable_motors()
 
-			update_leds()
+	update_leds()
 
 def update_leds():
 	"""Use the wiimote's LEDs as a speed indicator.
@@ -134,8 +133,6 @@ if __name__ == "__main__":
 	car.motor_setup()
 
 	WM.rpt_mode = cwiid.RPT_BTN
-	WM.mesg_callback = callback_buttonMode
-	WM.enable(cwiid.FLAG_MESG_IFC | cwiid.FLAG_CONTINUOUS)
 
 	while True:
-		pass
+		mainloop_buttonMode()
