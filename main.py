@@ -136,9 +136,6 @@ def update_leds():
 	else:
 		WM.led = 0
 
-if __name__ == "__main__":
-	main()
-
 def main():
 	wm_setup()
 	car.motor_setup()
@@ -147,3 +144,6 @@ def main():
 
 	while True:
 		mainloop_buttonMode()
+
+if __name__ == "__main__":
+	main()
