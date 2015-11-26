@@ -29,7 +29,7 @@ _CURRENT_ROTATION = 50.0
 _MAX_PWM_TICK = 4096
 # Convert rotation into int tuple ranging from 0..4096 defining when to toggle pwm signal
 # Calibrated: 0.6 is far right, 0, is far left, 0.3 is centered
-SERVO_ROTATION = int((_CURRENT_ROTATION/100)* 0.6 *4096)
+SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100)* 0.6 *4096)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
