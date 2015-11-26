@@ -87,6 +87,9 @@ def mainloop_buttonMode():
 
 	update_leds()
 
+	# Only poll at ~60Hz to reduce strain on batteries
+	time.sleep(0.0167)
+
 def update_leds():
 	"""Use the wiimote's LEDs as a speed indicator.
 	Forward:
