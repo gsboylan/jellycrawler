@@ -33,8 +33,8 @@ SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100)* 0.6 *4096)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
-PWM_FREQ = 1000
-PWM_CHANNEL = 0
+PWM_FREQ = 500
+PWM_CHANNEL = 1
 
 # Pointers to the DC Motor objects
 DRIVE_MOTOR1 = None
@@ -134,8 +134,8 @@ def rotate_right(percent):
 		percent = 1.0
 
 	global _CURRENT_ROTATION
-	if (_CURRENT_ROTATION <= (100.0 - percent)):
-		_CURRENT_ROTATION += percent
+	if (_CURRENT_ROTATION >= percent):
+		_CURRENT_ROTATION -= percent
 
 	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
 
@@ -143,11 +143,11 @@ def rotate_left(percent):
 	"""Decrease rotation by the percent specified, or 1 if not."""
 
 	if not percent:
-		percent = 1
+		percent = 1.0
 
 	global _CURRENT_ROTATION
-	if (_CURRENT_ROTATION >= percent):
-		_CURRENT_ROTATION -= percent
+	if (_CURRENT_ROTATION <= (100.0 - percent)):
+		_CURRENT_ROTATION += percent
 
 	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
 
