@@ -89,6 +89,8 @@ def callback_buttonMode(mesg_list, time):
 				car.disable_motors()
 
 if __name__ == "__main__":
+	wm_setup()
+	
 	WM.rpt_mode = cwiid.RPT_BTN
 	WM.mesg_callback = callback_buttonMode
 	WM.enable(cwiid.FLAG_MESG_IFC)

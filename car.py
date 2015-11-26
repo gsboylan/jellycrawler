@@ -64,13 +64,13 @@ def turnOffMotors():
 
 	global _CURRENT_DIRECTION
 	global _CURRENT_SPEED
-	_CURRENT_DIRECTION = _RELEASE
+	_CURRENT_DIRECTION = RELEASE
 	_CURRENT_SPEED = 0
 
-	DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-	DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
-	DRIVE_MOTOR1.run(_CURRENT_DIRECTION)
-	DRIVE_MOTOR2.run(_CURRENT_DIRECTION)
+	Adafruit_MotorHAT.getMotor(1).setSpeed(MOTOR_SPEED())
+	Adafruit_MotorHAT.getMotor(2).setSpeed(MOTOR_SPEED())
+	Adafruit_MotorHAT.getMotor(1).run(_CURRENT_DIRECTION)
+	Adafruit_MotorHAT.getMotor(2).run(_CURRENT_DIRECTION)
 	pass
 
 def set_direction(direction):
