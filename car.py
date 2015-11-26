@@ -7,6 +7,9 @@ from __future__ import print_function
 import atexit
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
 
+# Pointer to the motorhat for shutting off the motors on exit
+motorhat = None
+
 # Pre-translation car values. The motor and servo functions convert these into control signals.
 BACKWARD = Adafruit_MotorHAT.BACKWARD
 FORWARD = Adafruit_MotorHAT.FORWARD
@@ -42,12 +45,12 @@ pwm = None
 def motor_setup():
 	print('Setting up motors')
 
+	global motorhat
 	motorhat = Adafruit_MotorHAT(addr=0x60)
 	global DRIVE_MOTOR1
 	global DRIVE_MOTOR2
 	DRIVE_MOTOR1 = motorhat.getMotor(1)
 	DRIVE_MOTOR2 = motorhat.getMotor(2)
-	pass
 
 def servo_setup():
 	print('Setting up servos')
@@ -60,18 +63,16 @@ def servo_setup():
 def turnOffMotors():
 	"""Set the motor speed to 0 and release both motors."""
 
-	print('Turning off motors')
+	if motorhat:
+		global _CURRENT_DIRECTION
+		global _CURRENT_SPEED
+		_CURRENT_DIRECTION = RELEASE
+		_CURRENT_SPEED = 0
 
-	global _CURRENT_DIRECTION
-	global _CURRENT_SPEED
-	_CURRENT_DIRECTION = RELEASE
-	_CURRENT_SPEED = 0
-
-	Adafruit_MotorHAT.getMotor(1).setSpeed(MOTOR_SPEED())
-	Adafruit_MotorHAT.getMotor(2).setSpeed(MOTOR_SPEED())
-	Adafruit_MotorHAT.getMotor(1).run(_CURRENT_DIRECTION)
-	Adafruit_MotorHAT.getMotor(2).run(_CURRENT_DIRECTION)
-	pass
+		motorhat.getMotor(1).setSpeed(MOTOR_SPEED())
+		motorhat.getMotor(2).setSpeed(MOTOR_SPEED())
+		motorhat.getMotor(1).run(_CURRENT_DIRECTION)
+		motorhat.getMotor(2).run(_CURRENT_DIRECTION)
 
 def set_direction(direction):
 	"""Set the current direction of motor rotation.
