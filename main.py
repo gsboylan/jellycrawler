@@ -79,6 +79,11 @@ def mainloop_buttonMode():
 		elif (buttons & cwiid.BTN_DOWN):
 			car.set_direction(car.BACKWARD)
 
+	if (buttons & cwiid.BTN_LEFT):
+		car.rotate_right()
+	elif (buttons & cwiid.BTN_RIGHT):
+		car.rotate_left()
+
 	# Only go if the button is being held
 	if (buttons & cwiid.BTN_B):
 		car.enable_motors()
@@ -132,6 +137,9 @@ def update_leds():
 		WM.led = 0
 
 if __name__ == "__main__":
+	main()
+
+def main():
 	wm_setup()
 	car.motor_setup()
 

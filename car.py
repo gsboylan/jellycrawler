@@ -5,7 +5,7 @@ achieved in the code here."""
 
 from __future__ import print_function
 import atexit
-from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor
+from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_PWM_Servo_Driver
 
 # Pointer to the motorhat for shutting off the motors on exit
 motorhat = None
@@ -28,7 +28,8 @@ _CURRENT_ROTATION = 50.0
 # PWM ticks per cycle
 _MAX_PWM_TICK = 4096
 # Convert rotation into int tuple ranging from 0..4096 defining when to toggle pwm signal
-SERVO_ROTATION = int((_CURRENT_ROTATION/100)*4096)
+# Calibrated: 0.6 is far right, 0, is far left, 0.3 is centered
+SERVO_ROTATION = int((_CURRENT_ROTATION/100)* 0.6 *4096)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
@@ -54,9 +55,9 @@ def motor_setup():
 
 def servo_setup():
 	global pwm
-	# pwm = PWM(0x40)
-	# pwm.setPWMFreq(PWM_FREQ)
-	# pwm.setPWM(PWM_CHANNEL, 0, 0)
+	pwm = Adafruit_PWM_Servo_Driver.PWM(0x40)
+	pwm.setPWMFreq(PWM_FREQ)
+	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
 
 def turnOffMotors():
 	"""Set the motor speed to 0 and release both motors."""
@@ -130,10 +131,23 @@ def rotate_right(percent):
 	"""Increase rotation by the percent specified, or 1 if not."""
 
 	if not percent:
+		percent = 1.0
+
+	global _CURRENT_ROTATION
+	if (_CURRENT_ROTATION <= (100.0 - percent)):
+		_CURRENT_ROTATION += percent
+
+	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
+
+def rotate_left(percent):
+	"""Decrease rotation by the percent specified, or 1 if not."""
+
+	if not percent:
 		percent = 1
 
 	global _CURRENT_ROTATION
-	_CURRENT_ROTATION += percent
+	if (_CURRENT_ROTATION >= percent):
+		_CURRENT_ROTATION -= percent
 
 	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
 
