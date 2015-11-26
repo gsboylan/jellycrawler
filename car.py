@@ -88,7 +88,7 @@ def enable_motors():
 def disable_motors():
 	"""Releases the motors without changing the state variables."""
 	DRIVE_MOTOR1.run(RELEASE)
-	DRIVE_MOTOR1.run(RELEASE)
+	DRIVE_MOTOR2.run(RELEASE)
 
 def increase_speed():
 	"""Increase the speed by one percent and apply it to the motors.
