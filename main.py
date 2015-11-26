@@ -3,6 +3,7 @@
 from __future__ import print_function
 import cwiid
 import time
+import sys
 import car
 
 # How many times connecting to the wiimote can fail before we kill the program
@@ -48,6 +49,9 @@ def wm_setup():
 def mainloop_buttonMode():
 	buttons = WM.state['buttons']
 	# Buttons control movement and turning
+
+	if (buttons & cwiid.BTN_HOME):
+		sys.exit(0)
 
 	if (car._CURRENT_DIRECTION == car.FORWARD):
 		# Up button increases speed, down button decreases speed.
