@@ -99,6 +99,38 @@ def mainloop_buttonMode():
 	# Only poll at ~60Hz to reduce strain on batteries
 	time.sleep(0.0167)
 
+def mainloop_irmode():
+	buttons = WM.state['buttons']
+	ir_response = WM.state['ir_src']
+
+	# First filter out empty slots in the ir report
+	ir_points = [entry['pos'] for entry in ir_response if entry is not None]
+
+	if (len(ir_points == 2)):
+		# Ideal case
+		x = (ir_points[0][0] + ir_points[1][0])/2
+		yDiff = abs(ir_points[0][1] - ir_points[1][1])
+
+		percent = 100.0*(x/float(cwiid.IR_X_MAX))
+		car.snap_rotate(percent)
+
+	elif (len(ir_points == 1)):
+		# Manageable case, poor remote aim OR the robot is too close.
+		pass
+		
+	elif (len(ir_points >= 2)):
+		# how did we end up with more than two?
+		# Either there's another strong source (unlikely) or the car is sideways and we're picking
+		# up both the front and back. In this case, just pick the two with the most different Y 
+		pass
+		
+	else:
+		# We should stop doing anything until the user aims properly
+		pass
+		
+		time.sleep(0.0167)
+
+
 def update_leds():
 	"""Use the wiimote's LEDs as a speed indicator.
 	Forward:
