@@ -118,20 +118,35 @@ def mainloop_irmode():
 	if (len(ir_points) == 2):
 		# Ideal case
 		x = (ir_points[0][0] + ir_points[1][0])/2
-		yDiff = abs(ir_points[0][1] - ir_points[1][1])
-
 		percent = 100.0*(x/float(cwiid.IR_X_MAX))
 		car.snap_rotate(percent)
 
+		yDiff = abs(ir_points[0][1] - ir_points[1][1])
+
 	elif (len(ir_points) == 1):
 		# Manageable case, poor remote aim OR the robot is too close.
-		pass
+		# Halve speed, keep adjusting wheel rotation. Proceed with caution.
+		x = ir_points[0][0]
+		percent = 100.0*(x/float(cwiid.IR_X_MAX))
+		car.snap_rotate(percent)
 
 	elif (len(ir_points) >= 2):
 		# how did we end up with more than two?
 		# Either there's another strong source (unlikely) or the car is sideways and we're picking
 		# up both the front and back. In this case, just pick the two with the most different Y 
-		pass
+		# Alternately the user's aim is just really bad and they're aiming at the wrong thing.
+		# Can't really plan around that.
+		
+		# Get the highest y value
+		x1 = max(ir_points, key=lambda entry: entry[1])
+
+		# Get the lowest y value (don't return the same point if all y values are the same)
+		ir_points.remove(x1)
+		x2 = min(ir_points, key=lambda entry: entry[1])
+
+		x = (x1 + x2)/2
+		percent = 100.0*(x/float(cwiid.IR_X_MAX))
+		car.snap_rotate(percent)
 
 	else:
 		# We should stop doing anything until the user aims properly
