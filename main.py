@@ -52,6 +52,9 @@ def mainloop_buttonMode():
 
 	if (buttons & cwiid.BTN_HOME):
 		sys.exit(0)
+	if (buttons & cwiid.BTN_1):
+		global MODE
+		MODE = _IRLEDS_MODE
 
 	if (car._CURRENT_DIRECTION == car.FORWARD):
 		# Up button increases speed, down button decreases speed.
@@ -103,6 +106,12 @@ def mainloop_irmode():
 	buttons = WM.state['buttons']
 	ir_response = WM.state['ir_src']
 
+	if (buttons & cwiid.BTN_HOME):
+		sys.exit(0)
+	if (buttons & cwiid.BTN_2):
+		global MODE
+		MODE = _BUTTON_MODE
+
 	# First filter out empty slots in the ir report
 	ir_points = [entry['pos'] for entry in ir_response if entry is not None]
 
@@ -117,17 +126,17 @@ def mainloop_irmode():
 	elif (len(ir_points == 1)):
 		# Manageable case, poor remote aim OR the robot is too close.
 		pass
-		
+
 	elif (len(ir_points >= 2)):
 		# how did we end up with more than two?
 		# Either there's another strong source (unlikely) or the car is sideways and we're picking
 		# up both the front and back. In this case, just pick the two with the most different Y 
 		pass
-		
+
 	else:
 		# We should stop doing anything until the user aims properly
 		pass
-		
+
 		time.sleep(0.0167)
 
 
@@ -177,10 +186,13 @@ def main():
 	car.motor_setup()
 	car.servo_setup()
 
-	WM.rpt_mode = cwiid.RPT_BTN
+	WM.rpt_mode = cwiid.RPT_BTN | cwiid.RPT_IR
 
 	while True:
-		mainloop_buttonMode()
+		if MODE:
+			mainloop_irmode()
+		else:
+			mainloop_buttonMode()
 
 if __name__ == "__main__":
 	main()
