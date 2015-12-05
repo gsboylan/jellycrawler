@@ -28,7 +28,7 @@ CURRENT_ROTATION = 50.0
 # PWM ticks per cycle
 _MAX_PWM_TICK = 4096
 # Convert rotation into int tuple ranging from 0..4095 defining when to toggle _pwm signal
-_SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100) *  4095)
+_SERVO_ROTATION = lambda: int((CURRENT_ROTATION/100) *  4095)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
@@ -138,9 +138,9 @@ def rotate_right(percent):
 	if not percent:
 		percent = 1.0
 
-	global _CURRENT_ROTATION
-	if (_CURRENT_ROTATION >= percent):
-		_CURRENT_ROTATION -= percent
+	global CURRENT_ROTATION
+	if (CURRENT_ROTATION >= percent):
+		CURRENT_ROTATION -= percent
 
 	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
@@ -150,9 +150,9 @@ def rotate_left(percent):
 	if not percent:
 		percent = 1.0
 
-	global _CURRENT_ROTATION
-	if (_CURRENT_ROTATION <= (100.0 - percent)):
-		_CURRENT_ROTATION += percent
+	global CURRENT_ROTATION
+	if (CURRENT_ROTATION <= (100.0 - percent)):
+		CURRENT_ROTATION += percent
 
 	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
