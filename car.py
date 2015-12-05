@@ -7,8 +7,8 @@ from __future__ import print_function
 import atexit
 from Adafruit_MotorHAT import Adafruit_MotorHAT, Adafruit_DCMotor, Adafruit_PWM_Servo_Driver
 
-# Pointer to the motorhat for shutting off the motors on exit
-motorhat = None
+# Pointer to the _MOTORHAT for shutting off the motors on exit
+_MOTORHAT = None
 
 # Pre-translation car values. The motor and servo functions convert these into control signals.
 BACKWARD = Adafruit_MotorHAT.BACKWARD
@@ -17,18 +17,18 @@ RELEASE = Adafruit_MotorHAT.RELEASE
 _CURRENT_DIRECTION = RELEASE
 
 # Range 0-100
-_CURRENT_SPEED = 0.0
+CURRENT_SPEED = 0.0
 # Motor speed resolution
 _MAX_SPEED = 255
 # Convert speed into int by parsing percentage of max speed
-MOTOR_SPEED = lambda: int((_CURRENT_SPEED/100) * _MAX_SPEED)
+_MOTOR_SPEED = lambda: int((CURRENT_SPEED/100) * _MAX_SPEED)
 
 # Range 0-100, center at 50
-_CURRENT_ROTATION = 50.0
+CURRENT_ROTATION = 50.0
 # PWM ticks per cycle
 _MAX_PWM_TICK = 4096
-# Convert rotation into int tuple ranging from 0..4095 defining when to toggle pwm signal
-SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100) *  4095)
+# Convert rotation into int tuple ranging from 0..4095 defining when to toggle _pwm signal
+_SERVO_ROTATION = lambda: int((_CURRENT_ROTATION/100) *  4095)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
@@ -36,47 +36,47 @@ PWM_FREQ = 500
 PWM_CHANNEL = 15
 
 # Pointers to the DC Motor objects
-DRIVE_MOTOR1 = None
-DRIVE_MOTOR2 = None
+_DRIVE_MOTOR1 = None
+_DRIVE_MOTOR2 = None
 
-# Pointer to the pwm controller
-pwm = None
+# Pointer to the _pwm controller
+_pwm = None
 
 def motor_setup():
 	"""Get pointers to both of the motors and to the hat"""
 
-	global motorhat
-	motorhat = Adafruit_MotorHAT(addr=0x60)
-	global DRIVE_MOTOR1
-	global DRIVE_MOTOR2
-	DRIVE_MOTOR1 = motorhat.getMotor(1)
-	DRIVE_MOTOR2 = motorhat.getMotor(2)
+	global _MOTORHAT
+	_MOTORHAT = Adafruit_MotorHAT(addr=0x60)
+	global _DRIVE_MOTOR1
+	global _DRIVE_MOTOR2
+	_DRIVE_MOTOR1 = _MOTORHAT.getMotor(1)
+	_DRIVE_MOTOR2 = _MOTORHAT.getMotor(2)
 
 def servo_setup():
-	global pwm
-	pwm = Adafruit_PWM_Servo_Driver.PWM(0x40)
-	pwm.setPWMFreq(PWM_FREQ)
-	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
+	global _pwm
+	_pwm = Adafruit_PWM_Servo_Driver.PWM(0x40)
+	_pwm.setPWMFreq(PWM_FREQ)
+	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
 def turnOffMotors():
 	"""Set the motor speed to 0 and release both motors."""
 
-	if motorhat:
+	if _MOTORHAT:
 		global _CURRENT_DIRECTION
-		global _CURRENT_SPEED
+		global CURRENT_SPEED
 		_CURRENT_DIRECTION = RELEASE
-		_CURRENT_SPEED = 0.0
+		CURRENT_SPEED = 0.0
 
-		motorhat.getMotor(1).setSpeed(MOTOR_SPEED())
-		motorhat.getMotor(2).setSpeed(MOTOR_SPEED())
-		motorhat.getMotor(1).run(_CURRENT_DIRECTION)
-		motorhat.getMotor(2).run(_CURRENT_DIRECTION)
+		_MOTORHAT.getMotor(1).setSpeed(_MOTOR_SPEED())
+		_MOTORHAT.getMotor(2).setSpeed(_MOTOR_SPEED())
+		_MOTORHAT.getMotor(1).run(_CURRENT_DIRECTION)
+		_MOTORHAT.getMotor(2).run(_CURRENT_DIRECTION)
 
 def turnOffPWM():
 	"""set all PWM duty cycles to 0"""
-	if pwm:
+	if _pwm:
 		for channel in range (16):
-			pwm.setPWM(channel, 0, 0)
+			_pwm.setPWM(channel, 0, 0)
 
 def set_direction(direction):
 	"""Set the current direction of motor rotation.
@@ -86,13 +86,13 @@ def set_direction(direction):
 
 def enable_motors():
 	"""Applies whatever the current direction is to the motors to enable movement."""
-	DRIVE_MOTOR1.run(_CURRENT_DIRECTION)
-	DRIVE_MOTOR2.run(_CURRENT_DIRECTION)
+	_DRIVE_MOTOR1.run(_CURRENT_DIRECTION)
+	_DRIVE_MOTOR2.run(_CURRENT_DIRECTION)
 
 def disable_motors():
 	"""Releases the motors without changing the state variables."""
-	DRIVE_MOTOR1.run(RELEASE)
-	DRIVE_MOTOR2.run(RELEASE)
+	_DRIVE_MOTOR1.run(RELEASE)
+	_DRIVE_MOTOR2.run(RELEASE)
 
 def increase_speed():
 	"""Increase the speed by one percent and apply it to the motors.
@@ -101,12 +101,12 @@ def increase_speed():
 	# Only do this if the motor is able to turn (direction agnostic)
 	if _CURRENT_DIRECTION:
 		# First iterate the speed value
-		global _CURRENT_SPEED
-		if (_CURRENT_SPEED <= 95):
-			_CURRENT_SPEED += 5.0
+		global CURRENT_SPEED
+		if (CURRENT_SPEED <= 95):
+			CURRENT_SPEED += 5.0
 
-			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
+			_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
+			_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
 
 def decrease_speed():
 	"""Decrease the speed by one percent and apply it to the motors.
@@ -115,22 +115,22 @@ def decrease_speed():
 	# Only do this if the motor is able to turn (direction agnostic)
 	if _CURRENT_DIRECTION:
 		# First iterate the speed value
-		global _CURRENT_SPEED
-		if (_CURRENT_SPEED >= 5):
-			_CURRENT_SPEED -= 5.0
+		global CURRENT_SPEED
+		if (CURRENT_SPEED >= 5):
+			CURRENT_SPEED -= 5.0
 
-			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
+			_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
+			_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
 
 def snap_speed(percent):
 	# Only do this if the motor is able to turn (direction agnostic)
 	if _CURRENT_DIRECTION:
 		if ((percent <= 100) and (percent >= 0)):
-			global _CURRENT_SPEED
-			_CURRENT_SPEED = percent
+			global CURRENT_SPEED
+			CURRENT_SPEED = percent
 
-			DRIVE_MOTOR1.setSpeed(MOTOR_SPEED())
-			DRIVE_MOTOR2.setSpeed(MOTOR_SPEED())
+			_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
+			_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
 
 def rotate_right(percent):
 	"""Increase rotation by the percent specified, or 1 if not."""
@@ -142,7 +142,7 @@ def rotate_right(percent):
 	if (_CURRENT_ROTATION >= percent):
 		_CURRENT_ROTATION -= percent
 
-	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
+	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
 def rotate_left(percent):
 	"""Decrease rotation by the percent specified, or 1 if not."""
@@ -154,7 +154,7 @@ def rotate_left(percent):
 	if (_CURRENT_ROTATION <= (100.0 - percent)):
 		_CURRENT_ROTATION += percent
 
-	pwm.setPWM(PWM_CHANNEL, 0, SERVO_ROTATION())
+	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
 atexit.register(turnOffMotors)
 atexit.register(turnOffPWM)
