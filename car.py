@@ -28,11 +28,12 @@ CURRENT_ROTATION = 50.0
 # PWM ticks per cycle
 _MAX_PWM_TICK = 4096
 # Convert rotation into int tuple ranging from 0..4095 defining when to toggle _pwm signal
-_SERVO_ROTATION = lambda: int(((CURRENT_ROTATION*0.3 + 50)/100.0) *  4095)
+# Servo accepts 5-10% duty cycle
+_SERVO_ROTATION = lambda: int(((CURRENT_ROTATION*0.035 + 5)/100.0) *  4095)
 
 # PWM constants for controlling the servo. Channel is defined by where the servo is connected
 # to the board, freq should generally be 1kHz.
-PWM_FREQ = 500
+PWM_FREQ = 50
 PWM_CHANNEL = 15
 
 # Pointers to the DC Motor objects
