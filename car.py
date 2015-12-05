@@ -156,5 +156,12 @@ def rotate_left(percent):
 
 	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
+def snap_rotate(percent):
+	global CURRENT_ROTATION
+	if (percent >= 0 and percent <= 100):
+		CURRENT_ROTATION = float(percent)
+
+	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
+
 atexit.register(turnOffMotors)
 atexit.register(turnOffPWM)
