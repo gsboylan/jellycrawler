@@ -134,7 +134,7 @@ def snap_speed(percent):
 			_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
 
 def rotate_right(percent):
-	"""Increase rotation by the percent specified, or 1 if not."""
+	"""Decrease rotation by the percent specified, or 1 if not."""
 
 	if not percent:
 		percent = 1.0
@@ -146,7 +146,7 @@ def rotate_right(percent):
 	_pwm.setPWM(PWM_CHANNEL, 0, _SERVO_ROTATION())
 
 def rotate_left(percent):
-	"""Decrease rotation by the percent specified, or 1 if not."""
+	"""Increase rotation by the percent specified, or 1 if not."""
 
 	if not percent:
 		percent = 1.0
