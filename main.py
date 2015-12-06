@@ -173,9 +173,9 @@ def mainloop_irmode():
 		# We should stop doing anything until the user aims properly
 		car.disable_motors()
 
-		update_leds()
+	update_leds()
 
-		time.sleep(0.0167)
+	time.sleep(0.0167)
 
 def get_speed(yDiff):
 	"""Use the separation of Y points to calculate motor speed. Return speed as a percentage."""
