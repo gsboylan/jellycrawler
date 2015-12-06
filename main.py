@@ -17,6 +17,10 @@ _BUTTON_MODE = 0
 _IRLEDS_MODE = 1
 MODE = _BUTTON_MODE		# Default to button mode.
 
+# Y difference defining when to stop moving
+_CLOSEST_IR_DIFF = 450
+_LAST_IR_DIFF = 0
+
 def wm_setup():
 	raw_input('Press 1 and 2 on your Wiimote, then press Enter to begin.')
 	attempt = 0
@@ -105,6 +109,7 @@ def mainloop_buttonMode():
 def mainloop_irmode():
 	buttons = WM.state['buttons']
 	ir_response = WM.state['ir_src']
+	global _LAST_IR_DIFF
 
 	if (buttons & cwiid.BTN_HOME):
 		sys.exit(0)
@@ -123,12 +128,18 @@ def mainloop_irmode():
 
 		yDiff = abs(ir_points[0][1] - ir_points[1][1])
 
+		_LAST_IR_DIFF = yDiff
+		car.snap_speed(get_speed(yDiff))
+
 	elif (len(ir_points) == 1):
 		# Manageable case, poor remote aim OR the robot is too close.
-		# Halve speed, keep adjusting wheel rotation. Proceed with caution.
+		# Decrease speed, keep adjusting wheel rotation. Proceed with caution.
 		x = ir_points[0][0]
 		percent = 100.0*(x/float(cwiid.IR_X_MAX))
 		car.snap_rotate(percent)
+
+		speed = get_speed(_LAST_IR_DIFF)/2
+		car.snap_speed(speed)
 
 	elif (len(ir_points) >= 2):
 		# how did we end up with more than two?
@@ -138,22 +149,39 @@ def mainloop_irmode():
 		# Can't really plan around that.
 		
 		# Get the highest y value
-		x1 = max(ir_points, key=lambda entry: entry[1])
+		p1 = max(ir_points, key=lambda entry: entry[1])
 
 		# Get the lowest y value (don't return the same point if all y values are the same)
 		ir_points.remove(x1)
-		x2 = min(ir_points, key=lambda entry: entry[1])
+		p2 = min(ir_points, key=lambda entry: entry[1])
 
-		x = (x1 + x2)/2
+		x = (p1[0] + p2[0])/2
 		percent = 100.0*(x/float(cwiid.IR_X_MAX))
 		car.snap_rotate(percent)
 
+		yDiff = abs(p1[1] - p2[1])
+
+		_LAST_IR_DIFF = yDiff
+		car.snap_speed(get_speed(yDiff))
+
 	else:
 		# We should stop doing anything until the user aims properly
-		pass
+		car.disable_motors()
 
 		time.sleep(0.0167)
 
+def get_speed(yDiff):
+	"""Use the separation of Y points to calculate motor speed. Return speed as a percentage."""
+
+	if (yDiff >= _CLOSEST_IR_DIFF):
+		# Don't move when too close
+		return 0
+	elif (yDiff >= _CLOSEST_IR_DIFF*0.75):
+		# Minimum movement speed when close
+		return 25
+	elif (yDiff < _CLOSEST_IR_DIFF*0.75):
+		# When far enough away, move as a function of distance
+		return (1 - yDiff/_CLOSEST_IR_DIFF)*100
 
 def update_leds():
 	"""Use the wiimote's LEDs as a speed indicator.
