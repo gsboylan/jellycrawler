@@ -237,7 +237,7 @@ def update_leds():
 			WM.led = 0
 	elif (MODE == _IRLEDS_MODE):
 		if (car.CURRENT_ROTATION <= 12.5):
-			WM.led = cwiid.LED1_ON:
+			WM.led = cwiid.LED1_ON
 		elif (car.CURRENT_ROTATION <= 25):
 			WM.led = cwiid.LED1_ON | cwiid.LED2_ON
 		elif (car.CURRENT_ROTATION <= 37.5):
