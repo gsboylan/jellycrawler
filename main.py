@@ -132,6 +132,7 @@ def mainloop_irmode():
 
 		_LAST_IR_DIFF = yDiff
 		car.snap_speed(get_speed(yDiff))
+		car.enable_motors()
 
 	elif (len(ir_points) == 1):
 		# Manageable case, poor remote aim OR the robot is too close.
@@ -142,6 +143,7 @@ def mainloop_irmode():
 
 		speed = get_speed(_LAST_IR_DIFF)/2
 		car.snap_speed(speed)
+		car.enable_motors()
 
 	elif (len(ir_points) >= 2):
 		# how did we end up with more than two?
@@ -165,6 +167,7 @@ def mainloop_irmode():
 
 		_LAST_IR_DIFF = yDiff
 		car.snap_speed(get_speed(yDiff))
+		car.enable_motors()
 
 	else:
 		# We should stop doing anything until the user aims properly
