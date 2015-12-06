@@ -18,7 +18,7 @@ _IRLEDS_MODE = 1
 MODE = _BUTTON_MODE		# Default to button mode.
 
 # Y difference defining when to stop moving
-_CLOSEST_IR_DIFF = 450
+_CLOSEST_IR_DIFF = 450.0
 _LAST_IR_DIFF = 0
 
 def wm_setup():
@@ -186,7 +186,7 @@ def get_speed(yDiff):
 		return 25
 	elif (yDiff < _CLOSEST_IR_DIFF*0.75):
 		# When far enough away, move as a function of distance
-		return (1 - yDiff/_CLOSEST_IR_DIFF)*100
+		return ((1 - yDiff/_CLOSEST_IR_DIFF)*100)
 
 def update_leds():
 	"""Use the wiimote's LEDs as a speed indicator.
