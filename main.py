@@ -173,6 +173,8 @@ def mainloop_irmode():
 		# We should stop doing anything until the user aims properly
 		car.disable_motors()
 
+		update_leds()
+
 		time.sleep(0.0167)
 
 def get_speed(yDiff):
@@ -189,7 +191,8 @@ def get_speed(yDiff):
 		return ((1 - yDiff/_CLOSEST_IR_DIFF)*100)
 
 def update_leds():
-	"""Use the wiimote's LEDs as a speed indicator.
+	"""
+	Use the wiimote's LEDs as a speed indicator when in button mode
 	Forward:
 		0: 0%
 		1: <25%
@@ -201,33 +204,53 @@ def update_leds():
 		4: <25%
 		34: 25-50%
 		234: 50-75%
-		1234: 75-100%"""
+		1234: 75-100%
+
+	Use the leds as a direction indicator when in IR mode. 
+	"""
 
 	global WM
-	if (car.CURRENT_DIRECTION == car.FORWARD):
-		if (car.CURRENT_SPEED == 0):
+	if (MODE == _BUTTON_MODE):
+		if (car.CURRENT_DIRECTION == car.FORWARD):
+			if (car.CURRENT_SPEED == 0):
+				WM.led = 0
+			elif (car.CURRENT_SPEED <= 25):
+				WM.led = cwiid.LED1_ON
+			elif (car.CURRENT_SPEED <= 50):
+				WM.led = cwiid.LED1_ON | cwiid.LED2_ON
+			elif (car.CURRENT_SPEED <= 75):
+				WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON
+			else:
+				WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON | cwiid.LED4_ON
+		elif (car.CURRENT_DIRECTION == car.BACKWARD):
+			if (car.CURRENT_SPEED == 0):
+				WM.led = 0
+			elif (car.CURRENT_SPEED <= 25):
+				WM.led = cwiid.LED4_ON
+			elif (car.CURRENT_SPEED <= 50):
+				WM.led = cwiid.LED4_ON | cwiid.LED3_ON
+			elif (car.CURRENT_SPEED <= 75):
+				WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON
+			else:
+				WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON | cwiid.LED1_ON
+		else:
 			WM.led = 0
-		elif (car.CURRENT_SPEED <= 25):
-			WM.led = cwiid.LED1_ON
-		elif (car.CURRENT_SPEED <= 50):
+	elif (MODE == _IRLEDS_MODE):
+		if (car.CURRENT_ROTATION <= 12.5):
+			WM.led = cwiid.LED1_ON:
+		elif (car.CURRENT_ROTATION <= 25):
 			WM.led = cwiid.LED1_ON | cwiid.LED2_ON
-		elif (car.CURRENT_SPEED <= 75):
-			WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON
+		elif (car.CURRENT_ROTATION <= 37.5):
+			WM.led = cwiid.LED2_ON
+		elif (car.CURRENT_ROTATION <= 62.5):
+			WM.led = cwiid.LED2_ON | cwiid.LED3_ON
+		elif (car.CURRENT_ROTATION <= 75):
+			WM.led = cwiid.LED3_ON
+		elif (car.CURRENT_ROTATION <= 87.5):
+			WM.led = cwiid.LED3_ON | cwiid.LED4_ON
 		else:
-			WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON | cwiid.LED4_ON
-	elif (car.CURRENT_DIRECTION == car.BACKWARD):
-		if (car.CURRENT_SPEED == 0):
-			WM.led = 0
-		elif (car.CURRENT_SPEED <= 25):
 			WM.led = cwiid.LED4_ON
-		elif (car.CURRENT_SPEED <= 50):
-			WM.led = cwiid.LED4_ON | cwiid.LED3_ON
-		elif (car.CURRENT_SPEED <= 75):
-			WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON
-		else:
-			WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON | cwiid.LED1_ON
-	else:
-		WM.led = 0
+
 
 def main():
 	wm_setup()
@@ -237,7 +260,7 @@ def main():
 	WM.rpt_mode = cwiid.RPT_BTN | cwiid.RPT_IR
 
 	while True:
-		if MODE:
+		if MODE == _IRLEDS_MODE:
 			mainloop_irmode()
 		else:
 			mainloop_buttonMode()
