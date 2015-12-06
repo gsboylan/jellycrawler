@@ -14,7 +14,7 @@ _MOTORHAT = None
 BACKWARD = Adafruit_MotorHAT.BACKWARD
 FORWARD = Adafruit_MotorHAT.FORWARD
 RELEASE = Adafruit_MotorHAT.RELEASE
-_CURRENT_DIRECTION = RELEASE
+CURRENT_DIRECTION = RELEASE
 
 # Range 0-100
 CURRENT_SPEED = 0.0
@@ -63,15 +63,15 @@ def turnOffMotors():
 	"""Set the motor speed to 0 and release both motors."""
 
 	if _MOTORHAT:
-		global _CURRENT_DIRECTION
+		global CURRENT_DIRECTION
 		global CURRENT_SPEED
-		_CURRENT_DIRECTION = RELEASE
+		CURRENT_DIRECTION = RELEASE
 		CURRENT_SPEED = 0.0
 
 		_MOTORHAT.getMotor(1).setSpeed(_MOTOR_SPEED())
 		_MOTORHAT.getMotor(2).setSpeed(_MOTOR_SPEED())
-		_MOTORHAT.getMotor(1).run(_CURRENT_DIRECTION)
-		_MOTORHAT.getMotor(2).run(_CURRENT_DIRECTION)
+		_MOTORHAT.getMotor(1).run(CURRENT_DIRECTION)
+		_MOTORHAT.getMotor(2).run(CURRENT_DIRECTION)
 
 def turnOffPWM():
 	"""set all PWM duty cycles to 0"""
@@ -82,13 +82,13 @@ def turnOffPWM():
 def set_direction(direction):
 	"""Set the current direction of motor rotation.
 	Direction should be FORWARD, BACKWARD, or RELEASE."""
-	global _CURRENT_DIRECTION
-	_CURRENT_DIRECTION = direction
+	global CURRENT_DIRECTION
+	CURRENT_DIRECTION = direction
 
 def enable_motors():
 	"""Applies whatever the current direction is to the motors to enable movement."""
-	_DRIVE_MOTOR1.run(_CURRENT_DIRECTION)
-	_DRIVE_MOTOR2.run(_CURRENT_DIRECTION)
+	_DRIVE_MOTOR1.run(CURRENT_DIRECTION)
+	_DRIVE_MOTOR2.run(CURRENT_DIRECTION)
 
 def disable_motors():
 	"""Releases the motors without changing the state variables."""
@@ -100,7 +100,7 @@ def increase_speed():
 	Only works when motors are active."""
 
 	# Only do this if the motor is able to turn (direction agnostic)
-	if _CURRENT_DIRECTION:
+	if CURRENT_DIRECTION:
 		# First iterate the speed value
 		global CURRENT_SPEED
 		if (CURRENT_SPEED <= 95):
@@ -114,7 +114,7 @@ def decrease_speed():
 	Only works when motors are active."""
 
 	# Only do this if the motor is able to turn (direction agnostic)
-	if _CURRENT_DIRECTION:
+	if CURRENT_DIRECTION:
 		# First iterate the speed value
 		global CURRENT_SPEED
 		if (CURRENT_SPEED >= 5):
@@ -125,7 +125,7 @@ def decrease_speed():
 
 def snap_speed(percent):
 	# Only do this if the motor is able to turn (direction agnostic)
-	if _CURRENT_DIRECTION:
+	if CURRENT_DIRECTION:
 		if ((percent <= 100) and (percent >= 0)):
 			global CURRENT_SPEED
 			CURRENT_SPEED = percent

@@ -60,7 +60,7 @@ def mainloop_buttonMode():
 		global MODE
 		MODE = _IRLEDS_MODE
 
-	if (car._CURRENT_DIRECTION == car.FORWARD):
+	if (car.CURRENT_DIRECTION == car.FORWARD):
 		# Up button increases speed, down button decreases speed.
 		# Down (past 0) sets to backward.
 
@@ -68,15 +68,15 @@ def mainloop_buttonMode():
 			car.increase_speed()
 		elif (buttons & cwiid.BTN_DOWN):
 			car.decrease_speed()
-			if (car._CURRENT_SPEED == 0):
+			if (car.CURRENT_SPEED == 0):
 				car.set_direction(car.BACKWARD)
-	elif (car._CURRENT_DIRECTION == car.BACKWARD):
+	elif (car.CURRENT_DIRECTION == car.BACKWARD):
 		# Up button decreases speed, down button increases speed.
 		# Up (past 0) sets to foward.
 
 		if (buttons & cwiid.BTN_UP):
 			car.decrease_speed()
-			if (car._CURRENT_SPEED == 0):
+			if (car.CURRENT_SPEED == 0):
 				car.set_direction(car.FORWARD)
 		elif (buttons & cwiid.BTN_DOWN):
 			car.increase_speed()
@@ -110,6 +110,8 @@ def mainloop_irmode():
 	buttons = WM.state['buttons']
 	ir_response = WM.state['ir_src']
 	global _LAST_IR_DIFF
+
+	car.set_direction(car.FORWARD)
 
 	if (buttons & cwiid.BTN_HOME):
 		sys.exit(0)
@@ -199,25 +201,25 @@ def update_leds():
 		1234: 75-100%"""
 
 	global WM
-	if (car._CURRENT_DIRECTION == car.FORWARD):
-		if (car._CURRENT_SPEED == 0):
+	if (car.CURRENT_DIRECTION == car.FORWARD):
+		if (car.CURRENT_SPEED == 0):
 			WM.led = 0
-		elif (car._CURRENT_SPEED <= 25):
+		elif (car.CURRENT_SPEED <= 25):
 			WM.led = cwiid.LED1_ON
-		elif (car._CURRENT_SPEED <= 50):
+		elif (car.CURRENT_SPEED <= 50):
 			WM.led = cwiid.LED1_ON | cwiid.LED2_ON
-		elif (car._CURRENT_SPEED <= 75):
+		elif (car.CURRENT_SPEED <= 75):
 			WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON
 		else:
 			WM.led = cwiid.LED1_ON | cwiid.LED2_ON | cwiid.LED3_ON | cwiid.LED4_ON
-	elif (car._CURRENT_DIRECTION == car.BACKWARD):
-		if (car._CURRENT_SPEED == 0):
+	elif (car.CURRENT_DIRECTION == car.BACKWARD):
+		if (car.CURRENT_SPEED == 0):
 			WM.led = 0
-		elif (car._CURRENT_SPEED <= 25):
+		elif (car.CURRENT_SPEED <= 25):
 			WM.led = cwiid.LED4_ON
-		elif (car._CURRENT_SPEED <= 50):
+		elif (car.CURRENT_SPEED <= 50):
 			WM.led = cwiid.LED4_ON | cwiid.LED3_ON
-		elif (car._CURRENT_SPEED <= 75):
+		elif (car.CURRENT_SPEED <= 75):
 			WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON
 		else:
 			WM.led = cwiid.LED4_ON | cwiid.LED3_ON | cwiid.LED2_ON | cwiid.LED1_ON
