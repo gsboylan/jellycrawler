@@ -156,7 +156,7 @@ def mainloop_irmode():
 		p1 = max(ir_points, key=lambda entry: entry[1])
 
 		# Get the lowest y value (don't return the same point if all y values are the same)
-		ir_points.remove(x1)
+		ir_points.remove(p1)
 		p2 = min(ir_points, key=lambda entry: entry[1])
 
 		x = (p1[0] + p2[0])/2
