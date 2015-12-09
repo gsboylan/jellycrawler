@@ -36,6 +36,9 @@ def wm_setup():
 				print('Maximum number of attempts reached. Exiting.')
 				quit()
 	print('Connected to wiimote.')
+	print('Initialized in manual control mode. Press 1 to switch to Infrared mode.')
+	print('Press 2 while in Infrared mode to return to manual mode.')
+	print('Press Home to quit.')
 
 	time.sleep(1)
 	WM.rumble = True
@@ -106,7 +109,7 @@ def mainloop_buttonMode():
 	# Only poll at ~60Hz to reduce strain on batteries
 	time.sleep(0.0167)
 
-def mainloop_irmode():
+def mainloop_irMode():
 	buttons = WM.state['buttons']
 	ir_response = WM.state['ir_src']
 	global _LAST_IR_DIFF
@@ -251,7 +254,6 @@ def update_leds():
 		else:
 			WM.led = cwiid.LED4_ON
 
-
 def main():
 	wm_setup()
 	car.motor_setup()
@@ -261,7 +263,7 @@ def main():
 
 	while True:
 		if MODE == _IRLEDS_MODE:
-			mainloop_irmode()
+			mainloop_irMode()
 		else:
 			mainloop_buttonMode()
 
