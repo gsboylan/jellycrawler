@@ -105,9 +105,11 @@ def increase_speed():
 		global CURRENT_SPEED
 		if (CURRENT_SPEED <= 95):
 			CURRENT_SPEED += 5.0
+		else:
+			CURRENT_SPEED = 100
 
-			_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
-			_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
+		_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
+		_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
 
 def decrease_speed():
 	"""Decrease the speed by one percent and apply it to the motors.
@@ -119,9 +121,11 @@ def decrease_speed():
 		global CURRENT_SPEED
 		if (CURRENT_SPEED >= 5):
 			CURRENT_SPEED -= 5.0
+		else:
+			CURRENT_SPEED = 0
 
-			_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
-			_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
+		_DRIVE_MOTOR1.setSpeed(_MOTOR_SPEED())
+		_DRIVE_MOTOR2.setSpeed(_MOTOR_SPEED())
 
 def snap_speed(percent):
 	# Only do this if the motor is able to turn (direction agnostic)
